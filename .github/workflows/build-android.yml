@@ -1,0 +1,44 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm install -g @expo/cli eas-cli
+        npm install
+        
+    - name: Setup Expo
+      run: |
+        npx expo install --fix
+        
+    - name: Build APK
+      run: |
+        echo "Building Android APK..."
+        npx expo export --platform android
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: gestor-router-apk
+        path: |
+          dist/
+          *.apk
+        retention-days: 30
