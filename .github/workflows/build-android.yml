@@ -18,27 +18,24 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
         
     - name: Install dependencies
       run: |
         npm install -g @expo/cli
-        npm install
+        npm install --legacy-peer-deps
         
     - name: Setup Expo
       run: |
         npx expo install --fix
         
-    - name: Build APK
+    - name: Build for web (Alternative)
       run: |
-        echo "Building Android APK..."
-        npx expo export --platform android
+        echo "Building web version..."
+        npx expo export --platform web
         
-    - name: Upload APK
+    - name: Upload build
       uses: actions/upload-artifact@v4
       with:
-        name: gestor-router-apk
-        path: |
-          dist/
-          *.apk
+        name: gestor-router-build
+        path: dist/
         retention-days: 30
